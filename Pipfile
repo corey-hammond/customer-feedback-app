@@ -6,6 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+flask = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
