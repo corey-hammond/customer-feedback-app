@@ -5,3 +5,7 @@ A Python application to receive customer feedback from a form submission and sen
 ## Notes
 
 Pipenv install flask, psycopg2 and psycopg2-binary, flask-sqlalchemy, gunicorn
+
+Create your html templates 
+
+Create app.py 
