@@ -61,5 +61,71 @@ index.html:
       {% endif %}
 ```
 
-### Set up database
+### Configure Database Connection
 
+I created a new local development database with PostgreSQL using pgAdmin4 and connected it to the application using Flask SQLAlchemy.
+
+In app.py:
+
+```
+ENV = 'dev'
+
+if ENV == 'dev':
+    app.debug = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/feedback_app'
+else:
+    app.debug = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+```
+
+Next, create the database model:
+
+```
+class Feedback(db.Model):
+    __tablename__ = 'feedback'
+    id = db.Column(db.Integer, primary_key=True)
+    customer = db.Column(db.String(200))
+    dealer = db.Column(db.String(200))
+    rating = db.Column(db.Integer)
+    comments = db.Column(db.Text())
+
+    def __init__(self, customer, dealer, rating, comments):
+        self.customer = customer
+        self.dealer = dealer
+        self.rating = rating
+        self.comments = comments
+```
+
+Once this is configured in app.py, stop the app server, start a python cli, and run the following commands to populate the table in the database:
+
+```
+from app import db
+db.create_all()
+exit()
+```
+
+The 'feedback' table is now created in our database
+
+### Make DB Queries
+
+In our submit(), we want to take the form data and submit it to the database:
+
+```
+if db.session.query(Feedback).filter(Feedback.customer == customer).count() == 0:
+            data = Feedback(customer, dealer, rating, comments)
+            db.session.add(data)
+            db.session.commit()
+
+            return render_template('success.html')
+        return render_template('index.html', message='You have already submitted feedback')
+```
+
+### Use MailTrap.io to Stage Emails
+
+We're setting up a feature that allows an email to be sent with the feedback information. With each submission, the feedback data gets stored in our database and it gets sent in an email. Mailtrap.io acts as a staging area for the emails to assist us with the development process. 
+
+Create a new file, send_mail.py, which will use the smtplib and MIMEtext libraries to send emails. Create a function that uses these libraries to capture the data and sends to mailtrap.io and the desired email recipient. 

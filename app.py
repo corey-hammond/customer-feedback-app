@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from send_mail import send_mail
 
 # Instantiate app
 app = Flask(__name__)
 
-# Configure database connection
+# Configure database connection to app
 ENV = 'dev'
 
 if ENV == 'dev':
@@ -22,7 +23,7 @@ db = SQLAlchemy(app)
 class Feedback(db.Model):
     __tablename__ = 'feedback'
     id = db.Column(db.Integer, primary_key=True)
-    customer = db.Column(db.String(200))
+    customer = db.Column(db.String(200), unique=True)
     dealer = db.Column(db.String(200))
     rating = db.Column(db.Integer)
     comments = db.Column(db.Text())
@@ -52,7 +53,14 @@ def submit():
         if customer == '' or dealer == '':
             return render_template('index.html', message='Please enter all required fields')
 
-        return render_template('success.html')
+        if db.session.query(Feedback).filter(Feedback.customer == customer).count() == 0:
+            data = Feedback(customer, dealer, rating, comments)
+            db.session.add(data)
+            db.session.commit()
+            send_mail(customer, dealer, rating, comments)
+
+            return render_template('success.html')
+        return render_template('index.html', message='You have already submitted feedback')
 
 
 # Launch app
