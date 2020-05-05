@@ -170,4 +170,21 @@ Create requirements.txt:
 pip freeze > requirements.txt
 ```
 
-Create the Feedback table on the remote database
+Commit all changes to local Git repository
+
+Add Heroku as a remote repository:
+
+```
+heroku git:remote -a APP_NAME_HERE
+```
+
+Push to Heroko:
+
+```
+git push heroku master
+```
+
+Create the Feedback table on the remote database:
+
+```
+heroku run python
