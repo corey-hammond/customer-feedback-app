@@ -188,3 +188,22 @@ Create the Feedback table on the remote database:
 
 ```
 heroku run python
+from app import db
+db.create_all()
+exit()
+```
+
+You can log into your remote database from the Heroku cli:
+
+```
+heroku pg:psql --app APP_NAME_HERE
+```
+
+Check database:
+
+```
+SELECT * FROM feedback;
+```
+
+
+
