@@ -129,3 +129,45 @@ if db.session.query(Feedback).filter(Feedback.customer == customer).count() == 0
 We're setting up a feature that allows an email to be sent with the feedback information. With each submission, the feedback data gets stored in our database and it gets sent in an email. Mailtrap.io acts as a staging area for the emails to assist us with the development process. 
 
 Create a new file, send_mail.py, which will use the smtplib and MIMEtext libraries to send emails. Create a function that uses these libraries to capture the data and sends to mailtrap.io and the desired email recipient. 
+
+### Deploy to Heroku
+
+Create a Heroku PostgreSQL database, in the Heroku CLI (after logging in and creating a Heroku app):
+
+```
+heroku addons:create heroku-postgresql:hobby-dev --app APP_NAME_HERE
+```
+
+Obtain your new database url:
+
+```
+heroku config --app APP_NAME_HERE
+```
+
+Copy the url and paste into the production database uri in app.py. Change our ENV variable to 'prod'.
+
+Create Procfile:
+
+```
+touch Procfile
+```
+
+And enter the following code:
+
+```
+web: gunicorn app:app
+```
+
+Create a runtime.txt file and add:
+
+```
+python-3.7.2
+```
+
+Create requirements.txt:
+
+```
+pip freeze > requirements.txt
+```
+
+Create the Feedback table on the remote database
