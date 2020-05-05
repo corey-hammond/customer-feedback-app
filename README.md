@@ -1,10 +1,14 @@
 # Python Feedback App
 
-A Python application to receive customer feedback from a form submission and sent via email
+A Python application to receive customer feedback from a form submission and sent via email - (Mock application for a Lexus Dealer)
 
 ## Notes
 
+### Install packages
+
 Pipenv install flask, psycopg2 and psycopg2-binary, flask-sqlalchemy, gunicorn
+
+### Set up html templates and app.py with routes and server config
 
 Create your html templates
 
@@ -39,4 +43,23 @@ def submit():
         print(customer, dealer, rating, comments)
         return render_template('success.html')
 ```
+
+Set up a message in index.html
+
+app.py:
+
+```
+if customer == '' or dealer == '':
+            return render_template('index.html', message='Please enter all required fields')
+```
+
+index.html:
+
+```
+{% if message %}
+      <p class="message">{{ message | safe }}</p>
+      {% endif %}
+```
+
+### Set up database
 
